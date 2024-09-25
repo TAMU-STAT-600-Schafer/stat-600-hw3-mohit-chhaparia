@@ -20,16 +20,23 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
   ## Check the supplied parameters as described. You can assume that X, Xt are matrices; y, yt are vectors; and numIter, eta, lambda are scalars. You can assume that beta_init is either NULL (default) or a matrix.
   ###################################
   # Check that the first column of X and Xt are 1s, if not - display appropriate message and stop execution.
+  if(any(X[ , 1] != 1)) stop("First column of X must all be 1s to account for intercept.")
+  if(any(Xt[ , 1] != 1)) stop("First column of Xt must all be 1s to account for intercept.")
   
   # Check for compatibility of dimensions between X and Y
+  if(length(y) != nrow(X)) stop("Length of y and number of rows of X should be equal.")
   
   # Check for compatibility of dimensions between Xt and Yt
+  if(length(yt) != nrow(Xt)) stop("Length of yt and number of rows of Xt should be equal.")
   
   # Check for compatibility of dimensions between X and Xt
+  if(ncol(X) != ncol(Xt)) stop("Number of columns of X and Xt should be equal.")
   
   # Check eta is positive
+  if(eta <= 0) stop("Learning rate (eta) should strictly be positive.")
   
   # Check lambda is non-negative
+  if(lambda < 0) stop("Ridge parameter (lambda) should strictly be non-negative.")
   
   # Check whether beta_init is NULL. If NULL, initialize beta with p x K matrix of zeroes. If not NULL, check for compatibility of dimensions with what has been already supplied.
   
