@@ -39,6 +39,14 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
   if(lambda < 0) stop("Ridge parameter (lambda) should strictly be non-negative.")
   
   # Check whether beta_init is NULL. If NULL, initialize beta with p x K matrix of zeroes. If not NULL, check for compatibility of dimensions with what has been already supplied.
+  p <- ncol(X)
+  K <- length(unique(y))
+  if(is.null(beta_init)){
+    beta <- matrix(rep(0, p * K), p, K)
+  } else{
+    if(!all(dim(beta_init) == c(p, K))) stop("Number of rows of beta_init should be equal to the number of columns of X and number of columns of beta_init should be equal to the number of classes.")
+    beta <- beta_init
+  }
   
   ## Calculate corresponding pk, objective value f(beta_init), training error and testing error given the starting point beta_init
   ##########################################################################
