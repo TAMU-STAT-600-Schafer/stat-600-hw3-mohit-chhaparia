@@ -61,6 +61,16 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
   ##########################################################################
   for(i in 1:numIter){
     pk <- cal_pk(X, beta)
+    
+    # Indicator function and Gradient Calculations
+    gradient <- matrix(rep(0, p * K), p, K)
+    for(j in 1:K){
+      indicator <- (y == (j - 1))
+      gradient[ , j] <- - t(X) %*% (indicator - pk[ , j]) + lambda * beta[ , j]
+    }
+    
+    # Hessian and beta Calculations
+    
   
  
   # Within one iteration: perform the update, calculate updated objective function and training/testing errors in %
