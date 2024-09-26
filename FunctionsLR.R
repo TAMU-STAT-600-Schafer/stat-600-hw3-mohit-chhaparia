@@ -50,8 +50,7 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
   
   ## Calculate corresponding pk, objective value f(beta_init), training error and testing error given the starting point beta_init
   ##########################################################################
-  pred <- max.col(pk) - 1
-  err <- mean(pred != y) * 100
+  
   
   ## Newton's method cycle - implement the update EXACTLY numIter iterations
   ##########################################################################
@@ -76,4 +75,10 @@ cal_pk <- function(X, beta){
 cal_obj <- function(X, Y, beta, lambda){
   pk <- cal_pk(X, beta)
   return( - (sum(log(pk[cbind(1:nrow(X), Y + 1)]))) + ((lambda / 2) * sum(beta ^ 2)))
+}
+
+cal_err <- function(X, Y, beta){
+  pk <- cal_pk(X, beta)
+  pred <- max.col(pk) - 1
+  return(mean(pred != Y) * 100)
 }
