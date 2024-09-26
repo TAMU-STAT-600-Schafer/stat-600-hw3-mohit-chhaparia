@@ -50,7 +50,6 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
   
   ## Calculate corresponding pk, objective value f(beta_init), training error and testing error given the starting point beta_init
   ##########################################################################
-  fobj <- sum(log(pk[cbind(1:nrow(X), y + 1)])) + (lambda / 2) * sum(beta ^ 2)
   pred <- max.col(pk) - 1
   err <- mean(pred != y) * 100
   
@@ -72,4 +71,9 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
 cal_pk <- function(X, beta){
   pk <- exp(X %*% beta)
   return(pk / rowSums(pk))
+}
+
+cal_obj <- function(X, Y, beta, lambda){
+  pk <- cal_pk(X, beta)
+  return( - (sum(log(pk[cbind(1:nrow(X), Y + 1)]))) + ((lambda / 2) * sum(beta ^ 2)))
 }
