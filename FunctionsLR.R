@@ -76,8 +76,10 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
       beta[ , j] <- beta[ , j] - eta * solve(hessian) %*% gradient[ , j]
     }
   
- 
   # Within one iteration: perform the update, calculate updated objective function and training/testing errors in %
+  error_train <- cal_err(X, y, beta)
+  error_test <- cal_err(Xt, yt, beta)
+  objective <- cal_obj(X, y, beta, lambda)
   
   }
   ## Return output
