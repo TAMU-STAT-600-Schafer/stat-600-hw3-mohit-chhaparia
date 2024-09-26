@@ -50,7 +50,6 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
   
   ## Calculate corresponding pk, objective value f(beta_init), training error and testing error given the starting point beta_init
   ##########################################################################
-  pk <- exp(X %*% beta)
   fobj <- sum(log(pk[cbind(1:nrow(X), y + 1)])) + (lambda / 2) * sum(beta ^ 2)
   pred <- max.col(pk) - 1
   err <- mean(pred != y) * 100
@@ -68,4 +67,9 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
   # error_test - (numIter + 1) length vector of testing error % at each iteration (+ starting value)
   # objective - (numIter + 1) length vector of objective values of the function that we are minimizing at each iteration (+ starting value)
   return(list(beta = beta, error_train = error_train, error_test = error_test, objective =  objective))
+}
+
+cal_pk <- function(X, beta){
+  pk <- exp(X %*% beta)
+  return(pk / rowSums(pk))
 }
