@@ -168,13 +168,12 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
     
     # Indicator function and Gradient Calculations
     gradient <- matrix(rep(0, p * K), p, K)
-    for(j in 1:K){
-      indicator <- (y == (j - 1))
-      gradient[ , j] <- - crossprod(X, (indicator - pk[ , j])) + lambda * beta[ , j]
     
-    # Hessian and beta Calculations
-      wt <- pk[ , j] * (1 - pk[ , j])
-      hessian <- crossprod(X, wt * X) + lambda * diag(p)
+    indicator <- sapply(0:(K - 1), function(j) as.numeric(y == j))
+    gradient <- - crossprod(X, (indicator - pk)) + lambda * beta
+    wt <- pk * (1 - pk)
+    for(j in 1:K){
+      hessian <- crossprod(X, wt[ , j] * X) + lambda * diag(p)
       beta[ , j] <- beta[ , j] - eta * solve(hessian) %*% gradient[ , j]
     }
   
