@@ -162,15 +162,13 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
   error_train[1] <- cal_err(X, y, beta, pk)
   error_test[1] <- cal_err(Xt, yt, beta)
   
+  indicator <- sapply(0:(K - 1), function(j) as.numeric(y == j))
+  
   ## Newton's method cycle - implement the update EXACTLY numIter iterations
   ##########################################################################
   lambda_diag <- lambda * diag(p)
   for(i in 1:numIter){
     
-    # Indicator function and Gradient Calculations
-    gradient <- matrix(rep(0, p * K), p, K)
-    
-    indicator <- sapply(0:(K - 1), function(j) as.numeric(y == j))
     gradient <- - crossprod(X, (indicator - pk)) + lambda * beta
     wt <- pk * (1 - pk)
 
