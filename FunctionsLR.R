@@ -78,6 +78,10 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
     error_train[i + 1] <- cal_err(X, y, beta)
     error_test[i + 1] <- cal_err(Xt, yt, beta)
     objective[i + 1] <- cal_obj(X, y, beta, lambda)
+    if(abs(objective[i + 1] - objective[i]) < 1e-05){
+      print(i)
+      break
+    }
   
   }
   ## Return output
