@@ -96,8 +96,14 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
   # Check to ensure yt contains values from 0 to K-1
   if(any(yt < 0) | any(yt >= length(unique(yt)))) stop("yt must contain class labels from 0 to K - 1.")
   
+  #####################
+  # Checks on numIter #
+  #####################
+  # Check to ensure numIter is not NA or non-numeric
+  if(is.na(numIter) | !is.numeric(numIter)) stop("numIter must be a single positive integer.")
+  # Check if numIter is a single positive integer
+  if(length(numIter) != 1 | numIter <= 0 | numIter != as.integer(numIter)) stop(" numIter must be a positive integer.")
   
-
   
   
   # Check for compatibility of dimensions between X and Y
