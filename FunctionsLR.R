@@ -72,14 +72,14 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
     # Hessian and beta Calculations
     for(j in 1:K){
       wt <- diag(as.vector(pk[ , j] * (1 - pk[ , j])))
-      hessian <- t(X) %*% wt %*% X + lambda * diag[pk]
+      hessian <- t(X) %*% wt %*% X + lambda * diag(pk)
       beta[ , j] <- beta[ , j] - eta * solve(hessian) %*% gradient[ , j]
     }
   
-  # Within one iteration: perform the update, calculate updated objective function and training/testing errors in %
-  error_train <- cal_err(X, y, beta)
-  error_test <- cal_err(Xt, yt, beta)
-  objective <- cal_obj(X, y, beta, lambda)
+    # Within one iteration: perform the update, calculate updated objective function and training/testing errors in %
+    error_train[i + 1] <- cal_err(X, y, beta)
+    error_test[i + 1] <- cal_err(Xt, yt, beta)
+    objective[i + 1] <- cal_obj(X, y, beta, lambda)
   
   }
   ## Return output
