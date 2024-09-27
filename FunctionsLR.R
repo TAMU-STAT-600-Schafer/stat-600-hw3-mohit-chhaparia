@@ -108,23 +108,31 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
   # Checks on eta #
   #################
   # Check to ensure eta is not NA or non-numeric
-  if(is.na(eta) | !is.numeric(eta) | length(eta) != 1 | is.infinite(eta)) stop("numIter must be a single positive number.")
+  if(is.na(eta) | !is.numeric(eta) | length(eta) != 1 | is.infinite(eta)) stop("eta must be a single positive number.")
   # Check eta is positive
   if(eta <= 0) stop("Learning rate (eta) should strictly be positive.")
   
-  
-  # Check for compatibility of dimensions between X and Y
-  if(length(y) != nrow(X)) stop("Length of y and number of rows of X should be equal.")
-  
-  # Check for compatibility of dimensions between Xt and Yt
-  if(length(yt) != nrow(Xt)) stop("Length of yt and number of rows of Xt should be equal.")
-  
-  # Check for compatibility of dimensions between X and Xt
-  if(ncol(X) != ncol(Xt)) stop("Number of columns of X and Xt should be equal.")
-  
+  ####################
+  # Checks on lambda #
+  ####################
+  # Check to ensure lambda is not NA or non-numeric
+  if(is.na(lambda) | !is.numeric(lambda) | length(lambda) != 1 | is.infinite(lambda)) stop("lambda must be a single non-negative number.")
   # Check lambda is non-negative
   if(lambda < 0) stop("Ridge parameter (lambda) should strictly be non-negative.")
   
+  ###########################################
+  # Dimension check within X, Xt, y, and yt #
+  ###########################################
+  # Check for compatibility of dimensions between X and Y
+  if(length(y) != nrow(X)) stop("Length of y and number of rows of X should be equal.")
+  # Check for compatibility of dimensions between Xt and Yt
+  if(length(yt) != nrow(Xt)) stop("Length of yt and number of rows of Xt should be equal.")
+  # Check for compatibility of dimensions between X and Xt
+  if(ncol(X) != ncol(Xt)) stop("Number of columns of X and Xt should be equal.")
+  
+  #######################
+  # Checks on beta_init #
+  #######################
   # Check whether beta_init is NULL. If NULL, initialize beta with p x K matrix of zeroes. If not NULL, check for compatibility of dimensions with what has been already supplied.
   p <- ncol(X)
   K <- length(unique(y))
@@ -132,8 +140,17 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
     beta <- matrix(rep(0, p * K), p, K)
   } else{
     if(!all(dim(beta_init) == c(p, K))) stop("Number of rows of beta_init should be equal to the number of columns of X and number of columns of beta_init should be equal to the number of classes.")
+    if(!is.matrix(beta_init)){
+      if(!is.data.frame(beta_init)){
+        stop("beta_init must be a matrix or data frame of dimension (p x K).")
+      }else{
+        beta <- as.matrix(beta_init)
+      }
+    }
     beta <- beta_init
   }
+  if(any(is.na(beta_init)) | any(!is.numeric(beta_init))) stop("No values of beta_init can be NA or non-numeric.")
+  
   
   ## Calculate corresponding pk, objective value f(beta_init), training error and testing error given the starting point beta_init
   ##########################################################################
