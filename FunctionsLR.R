@@ -174,7 +174,7 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
     wt <- pk * (1 - pk)
     for(j in 1:K){
       hessian <- crossprod(X, wt[ , j] * X) + lambda * diag(p)
-      beta[ , j] <- beta[ , j] - eta * solve(hessian) %*% gradient[ , j]
+      beta[ , j] <- beta[ , j] - eta * chol2inv(chol(hessian)) %*% gradient[ , j]
     }
   
     # Within one iteration: perform the update, calculate updated objective function and training/testing errors in %
