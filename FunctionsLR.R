@@ -104,6 +104,13 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
   # Check if numIter is a single positive integer
   if(length(numIter) != 1 | numIter <= 0 | numIter != as.integer(numIter)) stop(" numIter must be a positive integer.")
   
+  #################
+  # Checks on eta #
+  #################
+  # Check to ensure eta is not NA or non-numeric
+  if(is.na(eta) | !is.numeric(eta) | length(eta) != 1 | is.infinite(eta)) stop("numIter must be a single positive number.")
+  # Check eta is positive
+  if(eta <= 0) stop("Learning rate (eta) should strictly be positive.")
   
   
   # Check for compatibility of dimensions between X and Y
@@ -114,9 +121,6 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
   
   # Check for compatibility of dimensions between X and Xt
   if(ncol(X) != ncol(Xt)) stop("Number of columns of X and Xt should be equal.")
-  
-  # Check eta is positive
-  if(eta <= 0) stop("Learning rate (eta) should strictly be positive.")
   
   # Check lambda is non-negative
   if(lambda < 0) stop("Ridge parameter (lambda) should strictly be non-negative.")
