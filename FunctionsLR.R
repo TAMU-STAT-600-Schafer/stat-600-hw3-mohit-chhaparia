@@ -70,6 +70,12 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
       stop("y should be a vector or a matrix with 1 column.")
     }
   }
+  # Check to ensure y does not have any NAs or non-numeric values.
+  if(any(is.na(y)) | !all(is.numeric(y))) stop("All elements of y should be numeric.")
+  # Check to ensure y is not an empty vector
+  if(length(y) == 0) stop("y must be a non-empty vector.")
+  # Check to ensure y contains values from 0 to K-1
+  if(any(y < 0) | any(y >= length(unique(y)))) stop("y must contain class labels from 0 to K - 1.")
   
   ################
   # Checks on yt #
@@ -83,6 +89,12 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
       stop("yt should be a vector or a matrix with 1 column.")
     }
   }
+  # Check to ensure yt does not have any NAs or non-numeric values.
+  if(any(is.na(yt)) | !all(is.numeric(yt))) stop("All elements of yt should be numeric.")
+  # Check to ensure yt is not an empty vector
+  if(length(yt) == 0) stop("yt must be a non-empty vector.")
+  # Check to ensure yt contains values from 0 to K-1
+  if(any(yt < 0) | any(yt >= length(unique(yt)))) stop("yt must contain class labels from 0 to K - 1.")
   
   
 
@@ -143,8 +155,10 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
     error_train[i + 1] <- cal_err(X, y, beta)
     error_test[i + 1] <- cal_err(Xt, yt, beta)
     objective[i + 1] <- cal_obj(X, y, beta, lambda)
+    
+    # Terminate the loop if we've a convergence on the objective value
     if(abs(objective[i + 1] - objective[i]) < 1e-05){
-      print(i)
+      cat("Converged after", i, "iterations.\n")
       break
     }
   
