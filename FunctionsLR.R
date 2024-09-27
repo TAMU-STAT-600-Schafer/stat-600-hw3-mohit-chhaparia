@@ -72,7 +72,7 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
     # Hessian and beta Calculations
     for(j in 1:K){
       wt <- diag(as.vector(pk[ , j] * (1 - pk[ , j])))
-      hessian <- t(X) %*% wt %*% X + lambda * diag(pk)
+      hessian <- t(X) %*% wt %*% X + lambda * diag(p)
       beta[ , j] <- beta[ , j] - eta * solve(hessian) %*% gradient[ , j]
     }
   
