@@ -20,6 +20,10 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
   ## Check the supplied parameters as described. You can assume that X, Xt are matrices; y, yt are vectors; and numIter, eta, lambda are scalars. You can assume that beta_init is either NULL (default) or a matrix.
   ###################################
   
+  ###############
+  # Checks on X #
+  ###############
+  
   # Check to ensure X is a matrix or a dataframe
   if(!is.matrix(X)){
     if(!is.data.frame(X)){
@@ -28,6 +32,17 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
       X <- as.matrix(X)
     }
   }
+  # Check to ensure X isn't empty
+  if(nrow(X) == 0 | ncol(X) == 0) stop("X must be a non-empty matrix.")
+  # Check to ensure X does not have any NAs or non-numeric values.
+  if(any(is.na(X)) | !all(is.numeric(X))) stop("All elements of X should be numeric.")
+  # Check that the first column of X are 1s, if not - display appropriate message and stop execution.
+  if(any(X[ , 1] != 1)) stop("First column of X must all be 1s to account for intercept.")
+  
+  ################
+  # Checks on Xt #
+  ################
+  
   # Check to ensure Xt is a matrix or a dataframe
   if(!is.matrix(Xt)){
     if(!is.data.frame(Xt)){
@@ -36,6 +51,17 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
       Xt <- as.matrix(Xt)
     }
   }
+  # Check to ensure Xt isn't empty
+  if(nrow(Xt) == 0 | ncol(Xt) == 0) stop("Xt must be a non-empty matrix.")
+  # Check to ensure Xt does not have any NAs or non-numeric values.
+  if(any(is.na(Xt)) | !all(is.numeric(Xt))) stop("All elements of Xt should be numeric.")
+  # Check that the first column of Xt are 1s, if not - display appropriate message and stop execution.
+  if(any(Xt[ , 1] != 1)) stop("First column of Xt must all be 1s to account for intercept.")
+  
+  ###############
+  # Checks on y #
+  ###############
+  
   # Check to ensure y is a vector or a matrix with 1 column
   if(!is.vector(y)){
     if(is.matrix(y) & ncol(y) == 1){
@@ -44,6 +70,11 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
       stop("y should be a vector or a matrix with 1 column.")
     }
   }
+  
+  ################
+  # Checks on yt #
+  ################
+  
   # Check to ensure yt is a vector or a matrix with 1 column
   if(!is.vector(yt)){
     if(is.matrix(yt) & ncol(yt) == 1){
@@ -53,9 +84,9 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
     }
   }
   
-  # Check that the first column of X and Xt are 1s, if not - display appropriate message and stop execution.
-  if(any(X[ , 1] != 1)) stop("First column of X must all be 1s to account for intercept.")
-  if(any(Xt[ , 1] != 1)) stop("First column of Xt must all be 1s to account for intercept.")
+  
+
+  
   
   # Check for compatibility of dimensions between X and Y
   if(length(y) != nrow(X)) stop("Length of y and number of rows of X should be equal.")
