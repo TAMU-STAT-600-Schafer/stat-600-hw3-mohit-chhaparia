@@ -157,14 +157,14 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
   objective <- vector(mode = 'numeric', length = (numIter + 1))
   error_train <- vector(mode = 'numeric', length = (numIter + 1))
   error_test <- vector(mode = 'numeric', length = (numIter + 1))
-  objective[1] <- cal_obj(X, y, beta, lambda)
-  error_train[1] <- cal_err(X, y, beta)
+  pk <- cal_pk(X, beta)
+  objective[1] <- cal_obj(X, y, beta, lambda, pk)
+  error_train[1] <- cal_err(X, y, beta, pk)
   error_test[1] <- cal_err(Xt, yt, beta)
   
   ## Newton's method cycle - implement the update EXACTLY numIter iterations
   ##########################################################################
   for(i in 1:numIter){
-    pk <- cal_pk(X, beta)
     
     # Indicator function and Gradient Calculations
     gradient <- matrix(rep(0, p * K), p, K)
@@ -178,9 +178,10 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
     }
   
     # Within one iteration: perform the update, calculate updated objective function and training/testing errors in %
-    error_train[i + 1] <- cal_err(X, y, beta)
+    pk <- cal_pk(X, beta)
+    error_train[i + 1] <- cal_err(X, y, beta, pk)
     error_test[i + 1] <- cal_err(Xt, yt, beta)
-    objective[i + 1] <- cal_obj(X, y, beta, lambda)
+    objective[i + 1] <- cal_obj(X, y, beta, lambda, pk)
     
     # Terminate the loop if we've a convergence on the objective value
     if(abs(objective[i + 1] - objective[i]) < 1e-05){
@@ -203,13 +204,12 @@ cal_pk <- function(X, beta){
   return(pk / rowSums(pk))
 }
 
-cal_obj <- function(X, Y, beta, lambda){
-  pk <- cal_pk(X, beta)
+cal_obj <- function(X, Y, beta, lambda, pk){
   return( - (sum(log(pk[cbind(1:nrow(X), Y + 1)]))) + ((lambda / 2) * sum(beta ^ 2)))
 }
 
-cal_err <- function(X, Y, beta){
-  pk <- cal_pk(X, beta)
+cal_err <- function(X, Y, beta, pk = NULL){
+  if(is.null(pk)) pk <- cal_pk(X, beta)
   pred <- max.col(pk) - 1
   return(mean(pred != Y) * 100)
 }
