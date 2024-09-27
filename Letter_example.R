@@ -35,6 +35,11 @@ out_modified <- LRMultiClass(X, Y, Xt, Yt, numIter = 100, eta = 0.5, lambda = 7,
 out_modified <- LRMultiClass(X, Y, Xt, Yt, numIter = 200, eta = 0.05, lambda = 37, beta_init = NULL)
 
 # [ToDo] Use microbenchmark to time your code with lambda=1 and 50 iterations. To save time, only apply microbenchmark 5 times.
+library(microbenchmark)
+microbenchmark(
+  LRMultiClass(X, Y, Xt, Yt, numIter = 50, eta = 0.1, lambda = 1, beta_init = NULL),
+  times = 5
+)
 
 # [ToDo] Report the median time of your code from microbenchmark above in the comments below
 
