@@ -149,7 +149,7 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
     }
     beta <- beta_init
   }
-  if(any(is.na(beta_init)) | any(!is.numeric(beta_init))) stop("No values of beta_init can be NA or non-numeric.")
+  if(any(is.na(beta)) | any(!is.numeric(beta))) stop("No values of beta_init can be NA or non-numeric.")
   
   
   ## Calculate corresponding pk, objective value f(beta_init), training error and testing error given the starting point beta_init
