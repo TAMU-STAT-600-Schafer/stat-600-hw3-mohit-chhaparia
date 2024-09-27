@@ -19,6 +19,40 @@
 LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta_init = NULL){
   ## Check the supplied parameters as described. You can assume that X, Xt are matrices; y, yt are vectors; and numIter, eta, lambda are scalars. You can assume that beta_init is either NULL (default) or a matrix.
   ###################################
+  
+  # Check to ensure X is a matrix or a dataframe
+  if(!is.matrix(X)){
+    if(!is.data.frame(X)){
+      stop("X should be a matrix or a data frame.")
+    }else{
+      X <- as.matrix(X)
+    }
+  }
+  # Check to ensure Xt is a matrix or a dataframe
+  if(!is.matrix(Xt)){
+    if(!is.data.frame(Xt)){
+      stop("Xt should be a matrix or a data frame.")
+    }else{
+      Xt <- as.matrix(Xt)
+    }
+  }
+  # Check to ensure y is a vector or a matrix with 1 column
+  if(!is.vector(y)){
+    if(is.matrix(y) & ncol(y) == 1){
+      y <- as.vector(y)
+    }else{
+      stop("y should be a vector or a matrix with 1 column.")
+    }
+  }
+  # Check to ensure yt is a vector or a matrix with 1 column
+  if(!is.vector(yt)){
+    if(is.matrix(yt) & ncol(yt) == 1){
+      yt <- as.vector(yt)
+    }else{
+      stop("yt should be a vector or a matrix with 1 column.")
+    }
+  }
+  
   # Check that the first column of X and Xt are 1s, if not - display appropriate message and stop execution.
   if(any(X[ , 1] != 1)) stop("First column of X must all be 1s to account for intercept.")
   if(any(Xt[ , 1] != 1)) stop("First column of Xt must all be 1s to account for intercept.")
