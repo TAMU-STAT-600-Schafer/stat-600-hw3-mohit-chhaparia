@@ -43,5 +43,5 @@ microbenchmark(
 )
 
 # [ToDo] Report the median time of your code from microbenchmark above in the comments below
-print("Median Time from microbenchmark on my M1 Mac = 1.633851 seconds.")
+print("Median Time from microbenchmark on my M1 Mac = 1.124266 seconds.")
 # Median time:  (in sec)
