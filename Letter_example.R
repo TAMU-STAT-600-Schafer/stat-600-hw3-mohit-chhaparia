@@ -4,13 +4,13 @@
 #########################
 # Training data
 letter_train <- read.table("Data/letter-train.txt", header = F, colClasses = "numeric")
-Y <- letter_train[, 1]
-X <- as.matrix(letter_train[, -1])
+Y <- letter_train[ , 1]
+X <- as.matrix(letter_train[ , -1])
 
 # Testing data
 letter_test <- read.table("Data/letter-test.txt", header = F, colClasses = "numeric")
-Yt <- letter_test[, 1]
-Xt <- as.matrix(letter_test[, -1])
+Yt <- letter_test[ , 1]
+Xt <- as.matrix(letter_test[ , -1])
 
 # [ToDo] Make sure to add column for an intercept to X and Xt
 X <- cbind(rep(1, nrow(X)), X)
