@@ -53,10 +53,29 @@ test_that("Testing error decreases or converges.", {
   expect_true(all(diff(values) <= values[1]))
 })
 
+# Check change in objective function values for a different normal population
 test_that("Objective function value decreases or converges for different set of parameters for rnorm.", {
   X_new <- cbind(1, matrix(rnorm(n * (p - 1), 5, 2), n, p - 1))
   Xt_new <- cbind(1, matrix(rnorm(n * (p - 1), 5, 2), n, p - 1))
   out_new <- LRMultiClass(X_new, y, Xt_new, yt, 50, 0.1, 1, beta_init)
   values <- out_new$objective
   expect_true(all(diff(values) <= 0 | abs(diff(values)) < 1e-5))
+})
+
+
+
+# Error: X is not a matrix
+tryCatch({
+  X <- "Not a matrix"
+  LRMultiClass(X, y, Xt, yt, 50, 0.1, 1, beta_init)
+}, error = function(e) {
+  print(paste("Error:", e$message))
+})
+
+# Error: First column of X is not all 1s
+tryCatch({
+  X <- matrix(rnorm(n * p), n, p)
+  LRMultiClass(X, y, Xt, yt, 50, 0.1, 1, beta_init)
+}, error = function(e) {
+  print(paste("Error:", e$message))
 })
