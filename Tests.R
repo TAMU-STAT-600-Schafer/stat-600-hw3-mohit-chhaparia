@@ -24,8 +24,21 @@ beta_init <- matrix(rep(0, p * K), p, K)
 out <- LRMultiClass(X, y, Xt, yt, 50, 0.1, 1, beta_init)
 
 # Check change in objective function values
-test_that("Objective function value decreases or converges.",{
+test_that("Objective function value decreases or converges.", {
   values <- out$objective
   expect_true(all(diff(values) <= 0 | abs(diff(values)) < 1e-5))
 })
 
+# Check change in training error - A test that will fail we can't guarantee that the error will always decrease or the absolute value of difference would be very small
+try(test_that("Training error decreases or converges.", {
+  values <- out$error_train
+  expect_true(all(diff(values) <= 0 | abs(diff(values)) < 1e-5))
+}))
+
+test_that("Objective function value decreases or converges for different set of parameters for rnorm.", {
+  X_new <- cbind(1, matrix(rnorm(n * (p - 1), 5, 2), n, p - 1))
+  Xt_new <- cbind(1, matrix(rnorm(n * (p - 1), 5, 2), n, p - 1))
+  out_new <- LRMultiClass(X_new, y, Xt_new, yt, 50, 0.1, 1, beta_init)
+  values <- out_new$objective
+  expect_true(all(diff(values) <= 0 | abs(diff(values)) < 1e-5))
+})
