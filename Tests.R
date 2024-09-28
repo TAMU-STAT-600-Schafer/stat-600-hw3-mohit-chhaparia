@@ -35,6 +35,24 @@ try(test_that("Training error decreases or converges.", {
   expect_true(all(diff(values) <= 0 | abs(diff(values)) < 1e-5))
 }))
 
+# Check that training error always reduces compared to first iteration
+test_that("Training error decreases or converges.", {
+  values <- out$error_train
+  expect_true(all(diff(values) <= values[1]))
+})
+
+# Check change in testing error - A test that will fail we can't guarantee that the error will always decrease or the absolute value of difference would be very small
+try(test_that("Testing error decreases or converges.", {
+  values <- out$error_test
+  expect_true(all(diff(values) <= 0 | abs(diff(values)) < 1e-5))
+}))
+
+# Check that testing error always reduces compared to first iteration
+test_that("Testing error decreases or converges.", {
+  values <- out$error_test
+  expect_true(all(diff(values) <= values[1]))
+})
+
 test_that("Objective function value decreases or converges for different set of parameters for rnorm.", {
   X_new <- cbind(1, matrix(rnorm(n * (p - 1), 5, 2), n, p - 1))
   Xt_new <- cbind(1, matrix(rnorm(n * (p - 1), 5, 2), n, p - 1))
