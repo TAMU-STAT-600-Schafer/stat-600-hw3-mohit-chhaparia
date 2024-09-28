@@ -66,16 +66,39 @@ test_that("Objective function value decreases or converges for different set of 
 
 # Error: X is not a matrix
 tryCatch({
-  X <- "Not a matrix"
-  LRMultiClass(X, y, Xt, yt, 50, 0.1, 1, beta_init)
+  X_wrong <- "Not a matrix"
+  LRMultiClass(X_wrong, y, Xt, yt, 50, 0.1, 1, beta_init)
 }, error = function(e) {
   print(paste("Error:", e$message))
 })
 
 # Error: First column of X is not all 1s
 tryCatch({
-  X <- matrix(rnorm(n * p), n, p)
-  LRMultiClass(X, y, Xt, yt, 50, 0.1, 1, beta_init)
+  X_wrong <- matrix(rnorm(n * p), n, p)
+  LRMultiClass(X_wrong, y, Xt, yt, 50, 0.1, 1, beta_init)
+}, error = function(e) {
+  print(paste("Error:", e$message))
+})
+
+# Error: Xt is not a matrix
+tryCatch({
+  Xt_wrong <- "Not a matrix"
+  LRMultiClass(X, y, Xt_wrong, yt, 50, 0.1, 1, beta_init)
+}, error = function(e) {
+  print(paste("Error:", e$message))
+})
+
+# Error: Incorrect values in y
+tryCatch({
+  y_wrong <- rep(0:3, 25)
+  LRMultiClass(X, y_wrong, Xt, yt, 50, 0.1, 1, beta_init)
+}, error = function(e) {
+  print(paste("Error:", e$message))
+})
+
+# Error: numIter not a positive integer
+tryCatch({
+  LRMultiClass(X, y, Xt, yt, -50, 0.1, 1, beta_init)
 }, error = function(e) {
   print(paste("Error:", e$message))
 })
