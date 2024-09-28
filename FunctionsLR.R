@@ -149,30 +149,41 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
     }
     beta <- beta_init
   }
+  # Check if any element of beta is NA or non-numeric
   if(any(is.na(beta)) | any(!is.numeric(beta))) stop("No values of beta_init can be NA or non-numeric.")
   
   
   ## Calculate corresponding pk, objective value f(beta_init), training error and testing error given the starting point beta_init
   ##########################################################################
+  # Declaring the structures of objective, error_train, and error_test
   objective <- vector(mode = 'numeric', length = (numIter + 1))
   error_train <- vector(mode = 'numeric', length = (numIter + 1))
   error_test <- vector(mode = 'numeric', length = (numIter + 1))
+  
+  # Calculating initial values of pk, objective, and train and test errors
   pk <- cal_pk(X, beta)
   objective[1] <- cal_obj(X, y, beta, lambda, pk)
   error_train[1] <- cal_err(X, y, beta, pk)
   error_test[1] <- cal_err(Xt, yt, beta)
   
+  # Calculating indicating values. Added it outside of for loop because it does not change with iterations
   indicator <- sapply(0:(K - 1), function(j) as.numeric(y == j))
+  
+  # Added the following line outside for loop because it does not change with iterations
+  lambda_diag <- lambda * diag(p)
   
   ## Newton's method cycle - implement the update EXACTLY numIter iterations
   ##########################################################################
-  lambda_diag <- lambda * diag(p)
   for(i in 1:numIter){
     
+    # Gradient, Hessian, and beta calculations
     gradient <- - crossprod(X, (indicator - pk)) + lambda * beta
     wt <- pk * (1 - pk)
-
-    
+    # Profvis helped me to target crossprod to reduce time.
+    # The output of crossprod(X_wt) is the same as the output of crossprod(X, wt[ , j] * X). To verify
+    # this compare the two outputs after rounding them as the values are not exactly equal because of 
+    # difference in precision in calculation of square root and that of direct multiplication. I rounded the outputs
+    # to 4 digits after the decimal for my comparison.
     for(j in 1:K){
       X_wt <- X * sqrt(wt[ , j])
       hessian <- solve(crossprod(X_wt) + lambda_diag)
@@ -201,15 +212,22 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
   return(list(beta = beta, error_train = error_train, error_test = error_test, objective =  objective))
 }
 
+# Calculation of pk as a separate function since it is a repetitive calculation.
+# This function is another point that consumes a significant amount of time in this code.
 cal_pk <- function(X, beta){
   pk <- exp(X %*% beta)
   return(pk / rowSums(pk))
 }
 
+# Calculation of objective as a separate function since it is a repetitive calculation.
 cal_obj <- function(X, Y, beta, lambda, pk){
   return( - (sum(log(pk[cbind(1:nrow(X), Y + 1)]))) + ((lambda / 2) * sum(beta ^ 2)))
 }
 
+# Calculation of error as a separate function since it is a repetitive calculation and it 
+# is used to calculate both error_train and error_test. Here we've give pk a default value of null
+# as we're calculating pk in the for loop which saves time but in case of error_test pk is calculated
+# on Xt and y instead of X and y and hence, this calculation is done separately from this point.
 cal_err <- function(X, Y, beta, pk = NULL){
   if(is.null(pk)) pk <- cal_pk(X, beta)
   pred <- max.col(pk) - 1
