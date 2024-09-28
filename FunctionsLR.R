@@ -172,9 +172,10 @@ LRMultiClass <- function(X, y, Xt, yt, numIter = 50, eta = 0.1, lambda = 1, beta
     gradient <- - crossprod(X, (indicator - pk)) + lambda * beta
     wt <- pk * (1 - pk)
 
+    
     for(j in 1:K){
-      hessian <- crossprod(X, wt[ , j] * X) + lambda_diag
-      hessian <- chol2inv(chol(hessian))
+      X_wt <- X * sqrt(wt[ , j])
+      hessian <- solve(crossprod(X_wt) + lambda_diag)
       beta[ , j] <- beta[ , j] - eta * hessian %*% gradient[ , j]
     }
   
